@@ -23,6 +23,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["stream_kind"]
           name: string
           playlist_id: string
+          seq: number
         }
         Insert: {
           created_at?: string
@@ -32,6 +33,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["stream_kind"]
           name: string
           playlist_id: string
+          seq?: number
         }
         Update: {
           created_at?: string
@@ -41,6 +43,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["stream_kind"]
           name?: string
           playlist_id?: string
+          seq?: number
         }
         Relationships: [
           {
