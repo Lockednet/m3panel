@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ParsedItem } from "./m3u";
 
 /** Downloads an M3U playlist server-side (avoids browser CORS limits). */
@@ -230,17 +231,18 @@ export const getDashboard = createServerFn({ method: "POST" })
     const nowIso = new Date().toISOString();
     const onlineSince = new Date(Date.now() - 3 * 60 * 1000).toISOString();
 
-    const count = async (table: string, apply?: (q: never) => never) => {
-      let q = sb.from(table).select("id", { count: "exact", head: true }) as never;
-      if (apply) q = apply(q);
-      const { count: c } = (await q) as unknown as { count: number | null };
+    const loose = sb as unknown as SupabaseClient;
+    const count = async (table: string, kind?: string) => {
+      let q = loose.from(table).select("id", { count: "exact", head: true });
+      if (kind) q = q.eq("kind", kind);
+      const { count: c } = await q;
       return c ?? 0;
     };
 
     const [playlists, live, movies, series, episodes, categories] = await Promise.all([
       count("playlists"),
-      count("streams", (q) => (q as never as { eq: (a: string, b: string) => never }).eq("kind", "live")),
-      count("streams", (q) => (q as never as { eq: (a: string, b: string) => never }).eq("kind", "movie")),
+      count("streams", "live"),
+      count("streams", "movie"),
       count("series"),
       count("series_episodes"),
       count("categories"),
@@ -293,7 +295,7 @@ export const listContent = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const sb = context.supabase;
+    const sb = context.supabase as unknown as SupabaseClient;
     const size = 40;
     const from = data.page * size;
     const table = data.kind === "series" ? "series" : "streams";
@@ -337,7 +339,10 @@ export const updateContentItem = createServerFn({ method: "POST" })
     if (data.categoryId !== undefined) patch["category_id"] = data.categoryId;
     if (data.url !== undefined && data.kind !== "series") patch["url"] = data.url;
     const table = data.kind === "series" ? "series" : "streams";
-    const { error } = await context.supabase.from(table).update(patch).eq("id", data.id);
+    const { error } = await (context.supabase as unknown as SupabaseClient)
+      .from(table)
+      .update(patch)
+      .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
