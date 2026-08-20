@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
+import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const Player_apiDotphpRoute = Player_apiDotphpRouteImport.update({
   path: '/player_api.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
+  id: '/xmltv.php',
+  path: '/xmltv.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
+  '/xmltv.php': typeof XmltvDotphpRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
+  '/xmltv.php': typeof XmltvDotphpRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
+  '/xmltv.php': typeof XmltvDotphpRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/get.php' | '/player_api.php'
+  fullPaths: '/' | '/get.php' | '/player_api.php' | '/xmltv.php'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/get.php' | '/player_api.php'
-  id: '__root__' | '/' | '/get.php' | '/player_api.php'
+  to: '/' | '/get.php' | '/player_api.php' | '/xmltv.php'
+  id: '__root__' | '/' | '/get.php' | '/player_api.php' | '/xmltv.php'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GetDotphpRoute: typeof GetDotphpRoute
   Player_apiDotphpRoute: typeof Player_apiDotphpRoute
+  XmltvDotphpRoute: typeof XmltvDotphpRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Player_apiDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/xmltv.php': {
+      id: '/xmltv.php'
+      path: '/xmltv.php'
+      fullPath: '/xmltv.php'
+      preLoaderRoute: typeof XmltvDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GetDotphpRoute: GetDotphpRoute,
   Player_apiDotphpRoute: Player_apiDotphpRoute,
+  XmltvDotphpRoute: XmltvDotphpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
