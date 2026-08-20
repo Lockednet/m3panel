@@ -15,6 +15,7 @@ import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
 import { Route as MovieUserPassIdRouteImport } from './routes/movie/$user/$pass/$id'
+import { Route as SeriesUserPassIdRouteImport } from './routes/series/$user/$pass/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const MovieUserPassIdRoute = MovieUserPassIdRouteImport.update({
   path: '/movie/$user/$pass/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeriesUserPassIdRoute = SeriesUserPassIdRouteImport.update({
+  id: '/series/$user/$pass/$id',
+  path: '/series/$user/$pass/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/xmltv.php': typeof XmltvDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
+  '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/xmltv.php': typeof XmltvDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
+  '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/xmltv.php': typeof XmltvDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
+  '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/xmltv.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
+    | '/series/$user/$pass/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/xmltv.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
+    | '/series/$user/$pass/$id'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/xmltv.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
+    | '/series/$user/$pass/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   XmltvDotphpRoute: typeof XmltvDotphpRoute
   LiveUserPassIdRoute: typeof LiveUserPassIdRoute
   MovieUserPassIdRoute: typeof MovieUserPassIdRoute
+  SeriesUserPassIdRoute: typeof SeriesUserPassIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MovieUserPassIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/series/$user/$pass/$id': {
+      id: '/series/$user/$pass/$id'
+      path: '/series/$user/$pass/$id'
+      fullPath: '/series/$user/$pass/$id'
+      preLoaderRoute: typeof SeriesUserPassIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   XmltvDotphpRoute: XmltvDotphpRoute,
   LiveUserPassIdRoute: LiveUserPassIdRoute,
   MovieUserPassIdRoute: MovieUserPassIdRoute,
+  SeriesUserPassIdRoute: SeriesUserPassIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
