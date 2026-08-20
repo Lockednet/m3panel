@@ -16,6 +16,7 @@ import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedPlaylistsRouteImport } from './routes/_authenticated/playlists'
 import { Route as ApiPublicGetDotphpRouteImport } from './routes/api/public/get[.]php'
 import { Route as ApiPublicPlayer_apiDotphpRouteImport } from './routes/api/public/player_api[.]php'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
@@ -56,6 +57,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPlaylistsRoute = AuthenticatedPlaylistsRouteImport.update({
+  id: '/playlists',
+  path: '/playlists',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicGetDotphpRoute = ApiPublicGetDotphpRouteImport.update({
   id: '/api/public/get.php',
   path: '/api/public/get.php',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/playlists': typeof AuthenticatedPlaylistsRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/playlists': typeof AuthenticatedPlaylistsRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/playlists': typeof AuthenticatedPlaylistsRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/player_api.php'
     | '/xmltv.php'
     | '/dashboard'
+    | '/playlists'
     | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/player_api.php'
     | '/xmltv.php'
     | '/dashboard'
+    | '/playlists'
     | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/player_api.php'
     | '/xmltv.php'
     | '/_authenticated/dashboard'
+    | '/_authenticated/playlists'
     | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
@@ -232,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/playlists': {
+      id: '/_authenticated/playlists'
+      path: '/playlists'
+      fullPath: '/playlists'
+      preLoaderRoute: typeof AuthenticatedPlaylistsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/get.php': {
       id: '/api/public/get.php'
       path: '/api/public/get.php'
@@ -272,10 +291,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPlaylistsRoute: typeof AuthenticatedPlaylistsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPlaylistsRoute: AuthenticatedPlaylistsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
