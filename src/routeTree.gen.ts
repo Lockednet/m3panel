@@ -10,9 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiPublicGetDotphpRouteImport } from './routes/api/public/get[.]php'
 import { Route as ApiPublicPlayer_apiDotphpRouteImport } from './routes/api/public/player_api[.]php'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
@@ -22,6 +25,15 @@ import { Route as SeriesUserPassIdRouteImport } from './routes/series/$user/$pas
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GetDotphpRoute = GetDotphpRouteImport.update({
@@ -38,6 +50,11 @@ const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
   id: '/xmltv.php',
   path: '/xmltv.php',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiPublicGetDotphpRoute = ApiPublicGetDotphpRouteImport.update({
   id: '/api/public/get.php',
@@ -68,9 +85,11 @@ const SeriesUserPassIdRoute = SeriesUserPassIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -79,9 +98,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -91,9 +112,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -104,9 +128,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/dashboard'
     | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
@@ -115,9 +141,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/dashboard'
     | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
@@ -126,9 +154,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/_authenticated/dashboard'
     | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
@@ -138,6 +169,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   GetDotphpRoute: typeof GetDotphpRoute
   Player_apiDotphpRoute: typeof Player_apiDotphpRoute
   XmltvDotphpRoute: typeof XmltvDotphpRoute
@@ -155,6 +188,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/get.php': {
@@ -177,6 +224,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/xmltv.php'
       preLoaderRoute: typeof XmltvDotphpRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/public/get.php': {
       id: '/api/public/get.php'
@@ -216,8 +270,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   GetDotphpRoute: GetDotphpRoute,
   Player_apiDotphpRoute: Player_apiDotphpRoute,
   XmltvDotphpRoute: XmltvDotphpRoute,
