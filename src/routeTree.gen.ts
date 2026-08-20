@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
+import { Route as AuthenticatedContentRouteImport } from './routes/_authenticated/content'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedPlaylistsRouteImport } from './routes/_authenticated/playlists'
 import { Route as ApiPublicGetDotphpRouteImport } from './routes/api/public/get[.]php'
@@ -51,6 +52,11 @@ const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
   id: '/xmltv.php',
   path: '/xmltv.php',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedContentRoute = AuthenticatedContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/content': typeof AuthenticatedContentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/playlists': typeof AuthenticatedPlaylistsRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/content': typeof AuthenticatedContentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/playlists': typeof AuthenticatedPlaylistsRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/_authenticated/content': typeof AuthenticatedContentRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/playlists': typeof AuthenticatedPlaylistsRoute
   '/api/public/get.php': typeof ApiPublicGetDotphpRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/content'
     | '/dashboard'
     | '/playlists'
     | '/api/public/get.php'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/content'
     | '/dashboard'
     | '/playlists'
     | '/api/public/get.php'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/_authenticated/content'
     | '/_authenticated/dashboard'
     | '/_authenticated/playlists'
     | '/api/public/get.php'
@@ -237,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof XmltvDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/content': {
+      id: '/_authenticated/content'
+      path: '/content'
+      fullPath: '/content'
+      preLoaderRoute: typeof AuthenticatedContentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -290,11 +309,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedContentRoute: typeof AuthenticatedContentRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPlaylistsRoute: typeof AuthenticatedPlaylistsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedContentRoute: AuthenticatedContentRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPlaylistsRoute: AuthenticatedPlaylistsRoute,
 }
