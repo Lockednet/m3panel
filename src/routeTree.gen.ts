@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
+import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
   path: '/xmltv.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiveUserPassIdRoute = LiveUserPassIdRouteImport.update({
+  id: '/live/$user/$pass/$id',
+  path: '/live/$user/$pass/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,30 @@ export interface FileRoutesById {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/get.php' | '/player_api.php' | '/xmltv.php'
+  fullPaths:
+    | '/'
+    | '/get.php'
+    | '/player_api.php'
+    | '/xmltv.php'
+    | '/live/$user/$pass/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/get.php' | '/player_api.php' | '/xmltv.php'
-  id: '__root__' | '/' | '/get.php' | '/player_api.php' | '/xmltv.php'
+  to:
+    | '/'
+    | '/get.php'
+    | '/player_api.php'
+    | '/xmltv.php'
+    | '/live/$user/$pass/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/get.php'
+    | '/player_api.php'
+    | '/xmltv.php'
+    | '/live/$user/$pass/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +92,7 @@ export interface RootRouteChildren {
   GetDotphpRoute: typeof GetDotphpRoute
   Player_apiDotphpRoute: typeof Player_apiDotphpRoute
   XmltvDotphpRoute: typeof XmltvDotphpRoute
+  LiveUserPassIdRoute: typeof LiveUserPassIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof XmltvDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live/$user/$pass/$id': {
+      id: '/live/$user/$pass/$id'
+      path: '/live/$user/$pass/$id'
+      fullPath: '/live/$user/$pass/$id'
+      preLoaderRoute: typeof LiveUserPassIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   GetDotphpRoute: GetDotphpRoute,
   Player_apiDotphpRoute: Player_apiDotphpRoute,
   XmltvDotphpRoute: XmltvDotphpRoute,
+  LiveUserPassIdRoute: LiveUserPassIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
