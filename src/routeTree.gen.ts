@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Player_apiDotphpRoute = Player_apiDotphpRouteImport.update({
+  id: '/player_api.php',
+  path: '/player_api.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/player_api.php': typeof Player_apiDotphpRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/player_api.php': typeof Player_apiDotphpRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/player_api.php': typeof Player_apiDotphpRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/player_api.php'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/player_api.php'
+  id: '__root__' | '/' | '/player_api.php'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  Player_apiDotphpRoute: typeof Player_apiDotphpRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/player_api.php': {
+      id: '/player_api.php'
+      path: '/player_api.php'
+      fullPath: '/player_api.php'
+      preLoaderRoute: typeof Player_apiDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  Player_apiDotphpRoute: Player_apiDotphpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
