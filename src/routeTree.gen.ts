@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
+import { Route as ApiPublicGetDotphpRouteImport } from './routes/api/public/get[.]php'
 import { Route as ApiPublicPlayer_apiDotphpRouteImport } from './routes/api/public/player_api[.]php'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
 import { Route as MovieUserPassIdRouteImport } from './routes/movie/$user/$pass/$id'
@@ -36,6 +37,11 @@ const Player_apiDotphpRoute = Player_apiDotphpRouteImport.update({
 const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
   id: '/xmltv.php',
   path: '/xmltv.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicGetDotphpRoute = ApiPublicGetDotphpRouteImport.update({
+  id: '/api/public/get.php',
+  path: '/api/public/get.php',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicPlayer_apiDotphpRoute =
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/api/public/get.php': typeof ApiPublicGetDotphpRoute
   '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/api/public/get.php'
     | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   GetDotphpRoute: typeof GetDotphpRoute
   Player_apiDotphpRoute: typeof Player_apiDotphpRoute
   XmltvDotphpRoute: typeof XmltvDotphpRoute
+  ApiPublicGetDotphpRoute: typeof ApiPublicGetDotphpRoute
   ApiPublicPlayer_apiDotphpRoute: typeof ApiPublicPlayer_apiDotphpRoute
   LiveUserPassIdRoute: typeof LiveUserPassIdRoute
   MovieUserPassIdRoute: typeof MovieUserPassIdRoute
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       path: '/xmltv.php'
       fullPath: '/xmltv.php'
       preLoaderRoute: typeof XmltvDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/get.php': {
+      id: '/api/public/get.php'
+      path: '/api/public/get.php'
+      fullPath: '/api/public/get.php'
+      preLoaderRoute: typeof ApiPublicGetDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/player_api.php': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   GetDotphpRoute: GetDotphpRoute,
   Player_apiDotphpRoute: Player_apiDotphpRoute,
   XmltvDotphpRoute: XmltvDotphpRoute,
+  ApiPublicGetDotphpRoute: ApiPublicGetDotphpRoute,
   ApiPublicPlayer_apiDotphpRoute: ApiPublicPlayer_apiDotphpRoute,
   LiveUserPassIdRoute: LiveUserPassIdRoute,
   MovieUserPassIdRoute: MovieUserPassIdRoute,
