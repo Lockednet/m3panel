@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
+import { Route as ApiPublicPlayer_apiDotphpRouteImport } from './routes/api/public/player_api[.]php'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
 import { Route as MovieUserPassIdRouteImport } from './routes/movie/$user/$pass/$id'
 import { Route as SeriesUserPassIdRouteImport } from './routes/series/$user/$pass/$id'
@@ -37,6 +38,12 @@ const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
   path: '/xmltv.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPlayer_apiDotphpRoute =
+  ApiPublicPlayer_apiDotphpRouteImport.update({
+    id: '/api/public/player_api.php',
+    path: '/api/public/player_api.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LiveUserPassIdRoute = LiveUserPassIdRouteImport.update({
   id: '/live/$user/$pass/$id',
   path: '/live/$user/$pass/$id',
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
   '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
@@ -67,6 +75,7 @@ export interface FileRoutesByTo {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
   '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
@@ -77,6 +86,7 @@ export interface FileRoutesById {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/api/public/player_api.php': typeof ApiPublicPlayer_apiDotphpRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
   '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
     | '/series/$user/$pass/$id'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
     | '/series/$user/$pass/$id'
@@ -106,6 +118,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/api/public/player_api.php'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
     | '/series/$user/$pass/$id'
@@ -116,6 +129,7 @@ export interface RootRouteChildren {
   GetDotphpRoute: typeof GetDotphpRoute
   Player_apiDotphpRoute: typeof Player_apiDotphpRoute
   XmltvDotphpRoute: typeof XmltvDotphpRoute
+  ApiPublicPlayer_apiDotphpRoute: typeof ApiPublicPlayer_apiDotphpRoute
   LiveUserPassIdRoute: typeof LiveUserPassIdRoute
   MovieUserPassIdRoute: typeof MovieUserPassIdRoute
   SeriesUserPassIdRoute: typeof SeriesUserPassIdRoute
@@ -151,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof XmltvDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/player_api.php': {
+      id: '/api/public/player_api.php'
+      path: '/api/public/player_api.php'
+      fullPath: '/api/public/player_api.php'
+      preLoaderRoute: typeof ApiPublicPlayer_apiDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/live/$user/$pass/$id': {
       id: '/live/$user/$pass/$id'
       path: '/live/$user/$pass/$id'
@@ -180,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   GetDotphpRoute: GetDotphpRoute,
   Player_apiDotphpRoute: Player_apiDotphpRoute,
   XmltvDotphpRoute: XmltvDotphpRoute,
+  ApiPublicPlayer_apiDotphpRoute: ApiPublicPlayer_apiDotphpRoute,
   LiveUserPassIdRoute: LiveUserPassIdRoute,
   MovieUserPassIdRoute: MovieUserPassIdRoute,
   SeriesUserPassIdRoute: SeriesUserPassIdRoute,
