@@ -204,7 +204,7 @@ async function streamList(
   const { data } = await q;
   const { origin } = baseUrl(request);
   return (data ?? []).map((s, i) => {
-    const seq = (s["categories"] as { seq: number } | null)?.seq;
+    const seq = (s["categories"] as unknown as { seq: number } | null)?.seq;
     const common = {
       num: i + 1,
       name: s["name"] as string,
@@ -266,8 +266,8 @@ async function seriesList(line: Line, categorySeq: string | null) {
     backdrop_path: [],
     youtube_trailer: "",
     episode_run_time: "0",
-    category_id: (s["categories"] as { seq: number } | null)?.seq
-      ? String((s["categories"] as { seq: number }).seq)
+    category_id: (s["categories"] as unknown as { seq: number } | null)?.seq
+      ? String((s["categories"] as unknown as { seq: number }).seq)
       : "0",
   }));
 }
@@ -309,8 +309,8 @@ async function seriesInfo(line: Line, seriesId: string) {
       cover: (serie["logo"] as string) ?? "",
       plot: "",
       genre: "",
-      category_id: (serie["categories"] as { seq: number } | null)?.seq
-        ? String((serie["categories"] as { seq: number }).seq)
+      category_id: (serie["categories"] as unknown as { seq: number } | null)?.seq
+        ? String((serie["categories"] as unknown as { seq: number }).seq)
         : "0",
     },
     episodes,
@@ -402,7 +402,7 @@ export async function handleGetPhp(request: Request): Promise<Response> {
 
   const lines = ["#EXTM3U"];
   for (const s of streams ?? []) {
-    const group = (s["categories"] as { name: string } | null)?.name ?? "Sem categoria";
+    const group = (s["categories"] as unknown as { name: string } | null)?.name ?? "Sem categoria";
     const kind = s["kind"] === "live" ? "live" : "movie";
     const ext = kind === "live" ? "ts" : ((s["container_ext"] as string) ?? "mp4");
     lines.push(
@@ -411,14 +411,14 @@ export async function handleGetPhp(request: Request): Promise<Response> {
     lines.push(`${origin}/${kind}/${line.username}/${line.password}/${s["id"]}.${ext}`);
   }
 
-  let eq = sb
+  const eq = sb
     .from("series_episodes")
     .select("id, name, logo, container_ext, series(name, category_id, categories(name))")
     .eq("playlist_id", line.playlist_id)
     .limit(30000);
   const { data: eps } = await eq;
   for (const e of eps ?? []) {
-    const serie = e["series"] as { name: string; categories: { name: string } | null } | null;
+    const serie = e["series"] as unknown as { name: string; categories: { name: string } | null } | null;
     const group = serie?.categories?.name ?? "Séries";
     lines.push(
       `#EXTINF:-1 tvg-logo="${e["logo"] ?? ""}" group-title="${group}",${serie?.name ?? ""} - ${e["name"]}`,
