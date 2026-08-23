@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedLinesRouteImport } from './routes/_authenticated/lines'
+import { Route as AuthenticatedResellersRouteImport } from './routes/_authenticated/resellers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const AuthenticatedLinesRoute = AuthenticatedLinesRouteImport.update({
   path: '/lines',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedResellersRoute = AuthenticatedResellersRouteImport.update({
+  id: '/_authenticated/resellers',
+  path: '/resellers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/lines': typeof AuthenticatedLinesRoute
+  '/resellers': typeof AuthenticatedResellersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/lines': typeof AuthenticatedLinesRoute
+  '/resellers': typeof AuthenticatedResellersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated/lines': typeof AuthenticatedLinesRoute
+  '/_authenticated/resellers': typeof AuthenticatedResellersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/lines'
+  fullPaths: '/' | '/lines' | '/resellers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/lines'
-  id: '__root__' | '/' | '/_authenticated/lines'
+  to: '/' | '/lines' | '/resellers'
+  id: '__root__' | '/' | '/_authenticated/lines' | '/_authenticated/resellers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedLinesRoute: typeof AuthenticatedLinesRoute
+  AuthenticatedResellersRoute: typeof AuthenticatedResellersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLinesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/resellers': {
+      id: '/_authenticated/resellers'
+      path: '/resellers'
+      fullPath: '/resellers'
+      preLoaderRoute: typeof AuthenticatedResellersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedLinesRoute: AuthenticatedLinesRoute,
+  AuthenticatedResellersRoute: AuthenticatedResellersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
