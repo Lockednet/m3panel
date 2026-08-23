@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GetDotphpRouteImport } from './routes/get[.]php'
 import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedLinesRouteImport } from './routes/_authenticated/lines'
 import { Route as AuthenticatedResellersRouteImport } from './routes/_authenticated/resellers'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
@@ -50,6 +51,11 @@ const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
   path: '/xmltv.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLinesRoute = AuthenticatedLinesRouteImport.update({
   id: '/lines',
   path: '/lines',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/lines': typeof AuthenticatedLinesRoute
   '/resellers': typeof AuthenticatedResellersRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/lines': typeof AuthenticatedLinesRoute
   '/resellers': typeof AuthenticatedResellersRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/get.php': typeof GetDotphpRoute
   '/player_api.php': typeof Player_apiDotphpRoute
   '/xmltv.php': typeof XmltvDotphpRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/lines': typeof AuthenticatedLinesRoute
   '/_authenticated/resellers': typeof AuthenticatedResellersRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/dashboard'
     | '/lines'
     | '/resellers'
     | '/live/$user/$pass/$id'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/dashboard'
     | '/lines'
     | '/resellers'
     | '/live/$user/$pass/$id'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/get.php'
     | '/player_api.php'
     | '/xmltv.php'
+    | '/_authenticated/dashboard'
     | '/_authenticated/lines'
     | '/_authenticated/resellers'
     | '/live/$user/$pass/$id'
@@ -210,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof XmltvDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/lines': {
       id: '/_authenticated/lines'
       path: '/lines'
@@ -249,11 +268,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedLinesRoute: typeof AuthenticatedLinesRoute
   AuthenticatedResellersRoute: typeof AuthenticatedResellersRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLinesRoute: AuthenticatedLinesRoute,
   AuthenticatedResellersRoute: AuthenticatedResellersRoute,
 }
