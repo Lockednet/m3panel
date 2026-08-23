@@ -7,10 +7,6 @@ export const Route = createFileRoute("/get.php")({
         const { handleGetPhp } = await import("@/lib/xtream.server");
         return handleGetPhp(request);
       },
-      OPTIONS: async () => {
-        const { corsPreflight } = await import("@/lib/xtream.server");
-        return corsPreflight();
-      },
     },
   },
 });

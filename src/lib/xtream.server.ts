@@ -411,7 +411,7 @@ export async function handleGetPhp(request: Request): Promise<Response> {
     lines.push(`${origin}/${kind}/${line.username}/${line.password}/${s["id"]}.${ext}`);
   }
 
-  const eq = sb
+  let eq = sb
     .from("series_episodes")
     .select("id, name, logo, container_ext, series(name, category_id, categories(name))")
     .eq("playlist_id", line.playlist_id)

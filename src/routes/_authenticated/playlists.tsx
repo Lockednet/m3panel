@@ -3,197 +3,178 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  fetchM3uText,
-  createPlaylist,
-  resetPlaylistContent,
-  ingestBatch,
-  finalizeImport,
-} from "@/lib/panel.functions";
-import { parseM3U, chunk } from "@/lib/m3u";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  createPlaylist,
+  fetchM3uText,
+  finalizeImport,
+  ingestBatch,
+  resetPlaylistContent,
+} from "@/lib/panel.functions";
+import { chunk, parseM3U } from "@/lib/m3u";
 import { PanelShell } from "@/components/panel/PanelShell";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/playlists")({
   head: () => ({
     meta: [
       { title: "Listas M3U — Painel IPTV" },
-      { name: "description", content: "Importe listas M3U por URL ou arquivo e acompanhe a análise do conteúdo." },
+      {
+        name: "description",
+        content: "Importe listas M3U por URL ou arquivo e acompanhe a análise do conteúdo.",
+      },
       { property: "og:title", content: "Listas M3U — Painel IPTV" },
-      { property: "og:description", content: "Importação e análise de listas M3U." },
+      { property: "og:description", content: "Importação e análise de listas M3U no painel." },
     ],
   }),
   component: PlaylistsPage,
 });
 
-type PlaylistRow = {
-  id: string;
-  name: string;
-  status: string;
-  source_type: string;
-  source_url: string | null;
-  total_items: number;
-  last_import_at: string | null;
-};
-
 function PlaylistsPage() {
   const qc = useQueryClient();
-  const fetchText = useServerFn(fetchM3uText);
   const create = useServerFn(createPlaylist);
-  const reset = useServerFn(resetPlaylistContent);
+  const fetchText = useServerFn(fetchM3uText);
   const ingest = useServerFn(ingestBatch);
   const finalize = useServerFn(finalizeImport);
+  const reset = useServerFn(resetPlaylistContent);
 
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
-  const [progress, setProgress] = useState<{ done: number; total: number; label: string } | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState("");
 
   const { data: playlists } = useQuery({
     queryKey: ["playlists"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("playlists")
-        .select("id, name, status, source_type, source_url, total_items, last_import_at")
+        .select("id, name, status, total_items, source_type, source_url, last_import_at")
         .order("created_at", { ascending: false });
       if (error) throw new Error(error.message);
-      return (data ?? []) as PlaylistRow[];
+      return data ?? [];
     },
+    refetchInterval: 15000,
   });
 
-  async function runImport(text: string, sourceType: "url" | "file", sourceUrl: string | null) {
-    const items = parseM3U(text);
-    if (!items.length) throw new Error("Nenhum item encontrado na lista");
-    const { playlistId, jobId } = await create({
-      data: { name: name.trim() || "Lista importada", sourceType, sourceUrl },
-    });
-    const batches = chunk(items, 800);
-    let done = 0;
+  async function runImport(sourceType: "url" | "file") {
+    if (!name.trim()) {
+      toast.error("Informe um nome para a lista");
+      return;
+    }
+    setBusy(true);
+    setProgress(0);
+    let created: { playlistId: string; jobId: string } | null = null;
     try {
-      for (const batch of batches) {
-        await ingest({
-          data: { playlistId, jobId, processed: done, total: items.length, items: batch },
-        });
-        done += batch.length;
-        setProgress({ done, total: items.length, label: "Importando itens" });
-      }
-      await finalize({ data: { playlistId, jobId, total: items.length } });
-      toast.success(`${items.length} itens importados`);
-    } catch (e) {
-      await finalize({
-        data: { playlistId, jobId, total: done, error: (e as Error).message.slice(0, 400) },
+      setStatus("Obtendo lista…");
+      const text =
+        sourceType === "url"
+          ? (await fetchText({ data: { url } })).text
+          : await (file as File).text();
+
+      setStatus("Analisando conteúdo…");
+      const items = parseM3U(text);
+      if (!items.length) throw new Error("Nenhum item encontrado na lista");
+
+      created = await create({
+        data: { name: name.trim(), sourceType, sourceUrl: sourceType === "url" ? url : null },
       });
-      throw e;
-    }
-  }
 
-  async function importFromUrl(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setProgress({ done: 0, total: 1, label: "Baixando lista" });
-    try {
-      const { text } = await fetchText({ data: { url } });
-      await runImport(text, "url", url);
+      const batches = chunk(items, 800);
+      let processed = 0;
+      for (const b of batches) {
+        await ingest({
+          data: {
+            playlistId: created.playlistId,
+            jobId: created.jobId,
+            processed,
+            total: items.length,
+            items: b,
+          },
+        });
+        processed += b.length;
+        setProgress(Math.round((processed / items.length) * 100));
+        setStatus(`Importando ${processed}/${items.length}…`);
+      }
+      setStatus("Finalizando…");
+      await finalize({
+        data: { playlistId: created.playlistId, jobId: created.jobId, total: items.length },
+      });
+      toast.success(`Lista importada: ${items.length} itens`);
+      setName("");
+      setUrl("");
+      setFile(null);
       qc.invalidateQueries();
-    } catch (err) {
-      toast.error((err as Error).message);
+    } catch (e) {
+      if (created) {
+        await finalize({
+          data: {
+            playlistId: created.playlistId,
+            jobId: created.jobId,
+            total: 0,
+            error: (e as Error).message.slice(0, 500),
+          },
+        }).catch(() => {});
+      }
+      toast.error((e as Error).message);
     } finally {
       setBusy(false);
-      setProgress(null);
+      setStatus("");
+      setProgress(0);
     }
-  }
-
-  async function importFromFile(e: React.FormEvent) {
-    e.preventDefault();
-    if (!file) return;
-    setBusy(true);
-    setProgress({ done: 0, total: 1, label: "Lendo arquivo" });
-    try {
-      const text = await file.text();
-      await runImport(text, "file", null);
-      qc.invalidateQueries();
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      setBusy(false);
-      setProgress(null);
-    }
-  }
-
-  async function removePlaylist(id: string) {
-    if (!confirm("Apagar esta lista e todo o conteúdo dela?")) return;
-    await reset({ data: { playlistId: id } });
-    await supabase.from("playlists").delete().eq("id", id);
-    qc.invalidateQueries();
-    toast.success("Lista removida");
   }
 
   return (
-    <PanelShell title="Listas M3U" description="Importe e gerencie as listas que alimentam o painel">
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,380px)_1fr]">
+    <PanelShell title="Listas M3U" description="Importe e gerencie as listas do painel">
+      <div className="grid gap-5 lg:grid-cols-[380px_1fr]">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Nova importação</CardTitle>
-            <CardDescription>A leitura é feita no navegador, suportando listas grandes.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="pname">Nome da lista</Label>
-              <Input
-                id="pname"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Servidor principal"
-              />
+              <Input id="pname" value={name} onChange={(e) => setName(e.target.value)} disabled={busy} />
             </div>
             <Tabs defaultValue="url">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="url">URL M3U</TabsTrigger>
                 <TabsTrigger value="file">Arquivo</TabsTrigger>
               </TabsList>
-              <TabsContent value="url">
-                <form onSubmit={importFromUrl} className="space-y-3 pt-3">
-                  <Input
-                    type="url"
-                    required
-                    placeholder="http://servidor.com/get.php?username=...&type=m3u_plus"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                  />
-                  <Button type="submit" className="w-full" disabled={busy}>
-                    Importar da URL
-                  </Button>
-                </form>
+              <TabsContent value="url" className="space-y-3 pt-3">
+                <Input
+                  placeholder="http://servidor/get.php?username=…"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  disabled={busy}
+                />
+                <Button className="w-full" disabled={busy || !url} onClick={() => runImport("url")}>
+                  Importar da URL
+                </Button>
               </TabsContent>
-              <TabsContent value="file">
-                <form onSubmit={importFromFile} className="space-y-3 pt-3">
-                  <Input
-                    type="file"
-                    accept=".m3u,.m3u8,text/plain"
-                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  />
-                  <Button type="submit" className="w-full" disabled={busy || !file}>
-                    Importar arquivo
-                  </Button>
-                </form>
+              <TabsContent value="file" className="space-y-3 pt-3">
+                <Input
+                  type="file"
+                  accept=".m3u,.m3u8,text/plain"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  disabled={busy}
+                />
+                <Button className="w-full" disabled={busy || !file} onClick={() => runImport("file")}>
+                  Importar arquivo
+                </Button>
               </TabsContent>
             </Tabs>
-
-            {progress ? (
+            {busy ? (
               <div className="space-y-2">
-                <p className="text-xs text-muted-foreground">
-                  {progress.label} — {progress.done}/{progress.total}
-                </p>
-                <Progress value={(progress.done / Math.max(progress.total, 1)) * 100} />
+                <Progress value={progress} />
+                <p className="text-xs text-muted-foreground">{status}</p>
               </div>
             ) : null}
           </CardContent>
@@ -214,47 +195,23 @@ function PlaylistsPage() {
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {p.total_items} itens ·{" "}
-                      {p.last_import_at
-                        ? new Date(p.last_import_at).toLocaleString("pt-BR")
-                        : "sem importação"}
+                    <p className="truncate text-xs text-muted-foreground">
+                      {p.total_items} itens · origem {p.source_type} ·{" "}
+                      {p.last_import_at ? new Date(p.last_import_at).toLocaleString("pt-BR") : "—"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={p.status === "ready" ? "default" : "secondary"}>{p.status}</Badge>
-                    {p.source_type === "url" && p.source_url ? (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        title="Reimportar"
-                        disabled={busy}
-                        onClick={async () => {
-                          setBusy(true);
-                          try {
-                            const { text } = await fetchText({ data: { url: p.source_url! } });
-                            await reset({ data: { playlistId: p.id } });
-                            setName(p.name);
-                            await runImport(text, "url", p.source_url);
-                            qc.invalidateQueries();
-                          } catch (err) {
-                            toast.error((err as Error).message);
-                          } finally {
-                            setBusy(false);
-                            setProgress(null);
-                          }
-                        }}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
-                    ) : null}
                     <Button
-                      size="icon"
-                      variant="ghost"
-                      title="Apagar"
-                      onClick={() => removePlaylist(p.id)}
+                      size="sm"
+                      variant="outline"
+                      onClick={async () => {
+                        await reset({ data: { playlistId: p.id } });
+                        qc.invalidateQueries();
+                        toast.success("Conteúdo da lista limpo");
+                      }}
                     >
-                      <Trash2 className="h-4 w-4 text-destructive" />
+                      Limpar conteúdo
                     </Button>
                   </div>
                 </div>

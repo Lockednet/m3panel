@@ -11,10 +11,6 @@ export const Route = createFileRoute("/player_api.php")({
         const { handlePlayerApi } = await import("@/lib/xtream.server");
         return handlePlayerApi(request);
       },
-      OPTIONS: async () => {
-        const { corsPreflight } = await import("@/lib/xtream.server");
-        return corsPreflight();
-      },
     },
   },
 });
