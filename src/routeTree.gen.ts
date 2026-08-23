@@ -10,53 +10,147 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as GetDotphpRouteImport } from './routes/get[.]php'
+import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
+import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
 import { Route as AuthenticatedLinesRouteImport } from './routes/_authenticated/lines'
 import { Route as AuthenticatedResellersRouteImport } from './routes/_authenticated/resellers'
+import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
+import { Route as MovieUserPassIdRouteImport } from './routes/movie/$user/$pass/$id'
+import { Route as SeriesUserPassIdRouteImport } from './routes/series/$user/$pass/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedLinesRoute = AuthenticatedLinesRouteImport.update({
-  id: '/_authenticated/lines',
-  path: '/lines',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GetDotphpRoute = GetDotphpRouteImport.update({
+  id: '/get.php',
+  path: '/get.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Player_apiDotphpRoute = Player_apiDotphpRouteImport.update({
+  id: '/player_api.php',
+  path: '/player_api.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const XmltvDotphpRoute = XmltvDotphpRouteImport.update({
+  id: '/xmltv.php',
+  path: '/xmltv.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedLinesRoute = AuthenticatedLinesRouteImport.update({
+  id: '/lines',
+  path: '/lines',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedResellersRoute = AuthenticatedResellersRouteImport.update({
-  id: '/_authenticated/resellers',
+  id: '/resellers',
   path: '/resellers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const LiveUserPassIdRoute = LiveUserPassIdRouteImport.update({
+  id: '/live/$user/$pass/$id',
+  path: '/live/$user/$pass/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MovieUserPassIdRoute = MovieUserPassIdRouteImport.update({
+  id: '/movie/$user/$pass/$id',
+  path: '/movie/$user/$pass/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeriesUserPassIdRoute = SeriesUserPassIdRouteImport.update({
+  id: '/series/$user/$pass/$id',
+  path: '/series/$user/$pass/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/get.php': typeof GetDotphpRoute
+  '/player_api.php': typeof Player_apiDotphpRoute
+  '/xmltv.php': typeof XmltvDotphpRoute
   '/lines': typeof AuthenticatedLinesRoute
   '/resellers': typeof AuthenticatedResellersRoute
+  '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
+  '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
+  '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/get.php': typeof GetDotphpRoute
+  '/player_api.php': typeof Player_apiDotphpRoute
+  '/xmltv.php': typeof XmltvDotphpRoute
   '/lines': typeof AuthenticatedLinesRoute
   '/resellers': typeof AuthenticatedResellersRoute
+  '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
+  '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
+  '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/get.php': typeof GetDotphpRoute
+  '/player_api.php': typeof Player_apiDotphpRoute
+  '/xmltv.php': typeof XmltvDotphpRoute
   '/_authenticated/lines': typeof AuthenticatedLinesRoute
   '/_authenticated/resellers': typeof AuthenticatedResellersRoute
+  '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
+  '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
+  '/series/$user/$pass/$id': typeof SeriesUserPassIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/lines' | '/resellers'
+  fullPaths:
+    | '/'
+    | '/get.php'
+    | '/player_api.php'
+    | '/xmltv.php'
+    | '/lines'
+    | '/resellers'
+    | '/live/$user/$pass/$id'
+    | '/movie/$user/$pass/$id'
+    | '/series/$user/$pass/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/lines' | '/resellers'
-  id: '__root__' | '/' | '/_authenticated/lines' | '/_authenticated/resellers'
+  to:
+    | '/'
+    | '/get.php'
+    | '/player_api.php'
+    | '/xmltv.php'
+    | '/lines'
+    | '/resellers'
+    | '/live/$user/$pass/$id'
+    | '/movie/$user/$pass/$id'
+    | '/series/$user/$pass/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/get.php'
+    | '/player_api.php'
+    | '/xmltv.php'
+    | '/_authenticated/lines'
+    | '/_authenticated/resellers'
+    | '/live/$user/$pass/$id'
+    | '/movie/$user/$pass/$id'
+    | '/series/$user/$pass/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedLinesRoute: typeof AuthenticatedLinesRoute
-  AuthenticatedResellersRoute: typeof AuthenticatedResellersRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  GetDotphpRoute: typeof GetDotphpRoute
+  Player_apiDotphpRoute: typeof Player_apiDotphpRoute
+  XmltvDotphpRoute: typeof XmltvDotphpRoute
+  LiveUserPassIdRoute: typeof LiveUserPassIdRoute
+  MovieUserPassIdRoute: typeof MovieUserPassIdRoute
+  SeriesUserPassIdRoute: typeof SeriesUserPassIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,27 +162,94 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get.php': {
+      id: '/get.php'
+      path: '/get.php'
+      fullPath: '/get.php'
+      preLoaderRoute: typeof GetDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player_api.php': {
+      id: '/player_api.php'
+      path: '/player_api.php'
+      fullPath: '/player_api.php'
+      preLoaderRoute: typeof Player_apiDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/xmltv.php': {
+      id: '/xmltv.php'
+      path: '/xmltv.php'
+      fullPath: '/xmltv.php'
+      preLoaderRoute: typeof XmltvDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/lines': {
       id: '/_authenticated/lines'
       path: '/lines'
       fullPath: '/lines'
       preLoaderRoute: typeof AuthenticatedLinesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/resellers': {
       id: '/_authenticated/resellers'
       path: '/resellers'
       fullPath: '/resellers'
       preLoaderRoute: typeof AuthenticatedResellersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/live/$user/$pass/$id': {
+      id: '/live/$user/$pass/$id'
+      path: '/live/$user/$pass/$id'
+      fullPath: '/live/$user/$pass/$id'
+      preLoaderRoute: typeof LiveUserPassIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/movie/$user/$pass/$id': {
+      id: '/movie/$user/$pass/$id'
+      path: '/movie/$user/$pass/$id'
+      fullPath: '/movie/$user/$pass/$id'
+      preLoaderRoute: typeof MovieUserPassIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/series/$user/$pass/$id': {
+      id: '/series/$user/$pass/$id'
+      path: '/series/$user/$pass/$id'
+      fullPath: '/series/$user/$pass/$id'
+      preLoaderRoute: typeof SeriesUserPassIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedLinesRoute: typeof AuthenticatedLinesRoute
+  AuthenticatedResellersRoute: typeof AuthenticatedResellersRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLinesRoute: AuthenticatedLinesRoute,
   AuthenticatedResellersRoute: AuthenticatedResellersRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  GetDotphpRoute: GetDotphpRoute,
+  Player_apiDotphpRoute: Player_apiDotphpRoute,
+  XmltvDotphpRoute: XmltvDotphpRoute,
+  LiveUserPassIdRoute: LiveUserPassIdRoute,
+  MovieUserPassIdRoute: MovieUserPassIdRoute,
+  SeriesUserPassIdRoute: SeriesUserPassIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
