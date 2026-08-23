@@ -17,6 +17,7 @@ import { Route as Player_apiDotphpRouteImport } from './routes/player_api[.]php'
 import { Route as XmltvDotphpRouteImport } from './routes/xmltv[.]php'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedLinesRouteImport } from './routes/_authenticated/lines'
+import { Route as AuthenticatedPlaylistsRouteImport } from './routes/_authenticated/playlists'
 import { Route as AuthenticatedResellersRouteImport } from './routes/_authenticated/resellers'
 import { Route as LiveUserPassIdRouteImport } from './routes/live/$user/$pass/$id'
 import { Route as MovieUserPassIdRouteImport } from './routes/movie/$user/$pass/$id'
@@ -61,6 +62,11 @@ const AuthenticatedLinesRoute = AuthenticatedLinesRouteImport.update({
   path: '/lines',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPlaylistsRoute = AuthenticatedPlaylistsRouteImport.update({
+  id: '/playlists',
+  path: '/playlists',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedResellersRoute = AuthenticatedResellersRouteImport.update({
   id: '/resellers',
   path: '/resellers',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/xmltv.php': typeof XmltvDotphpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/lines': typeof AuthenticatedLinesRoute
+  '/playlists': typeof AuthenticatedPlaylistsRoute
   '/resellers': typeof AuthenticatedResellersRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/xmltv.php': typeof XmltvDotphpRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/lines': typeof AuthenticatedLinesRoute
+  '/playlists': typeof AuthenticatedPlaylistsRoute
   '/resellers': typeof AuthenticatedResellersRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/xmltv.php': typeof XmltvDotphpRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/lines': typeof AuthenticatedLinesRoute
+  '/_authenticated/playlists': typeof AuthenticatedPlaylistsRoute
   '/_authenticated/resellers': typeof AuthenticatedResellersRoute
   '/live/$user/$pass/$id': typeof LiveUserPassIdRoute
   '/movie/$user/$pass/$id': typeof MovieUserPassIdRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/xmltv.php'
     | '/dashboard'
     | '/lines'
+    | '/playlists'
     | '/resellers'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/xmltv.php'
     | '/dashboard'
     | '/lines'
+    | '/playlists'
     | '/resellers'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/xmltv.php'
     | '/_authenticated/dashboard'
     | '/_authenticated/lines'
+    | '/_authenticated/playlists'
     | '/_authenticated/resellers'
     | '/live/$user/$pass/$id'
     | '/movie/$user/$pass/$id'
@@ -236,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLinesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/playlists': {
+      id: '/_authenticated/playlists'
+      path: '/playlists'
+      fullPath: '/playlists'
+      preLoaderRoute: typeof AuthenticatedPlaylistsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/resellers': {
       id: '/_authenticated/resellers'
       path: '/resellers'
@@ -270,12 +289,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedLinesRoute: typeof AuthenticatedLinesRoute
+  AuthenticatedPlaylistsRoute: typeof AuthenticatedPlaylistsRoute
   AuthenticatedResellersRoute: typeof AuthenticatedResellersRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLinesRoute: AuthenticatedLinesRoute,
+  AuthenticatedPlaylistsRoute: AuthenticatedPlaylistsRoute,
   AuthenticatedResellersRoute: AuthenticatedResellersRoute,
 }
 

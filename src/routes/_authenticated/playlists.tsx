@@ -65,7 +65,10 @@ function PlaylistsPage() {
   });
 
   async function runImport(sourceType: "url" | "file") {
-    if (!name.trim()) return toast.error("Informe um nome para a lista");
+    if (!name.trim()) {
+      toast.error("Informe um nome para a lista");
+      return;
+    }
     setBusy(true);
     setProgress(0);
     let created: { playlistId: string; jobId: string } | null = null;
